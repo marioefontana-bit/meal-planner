@@ -1,0 +1,91 @@
+{
+    "app": {
+        "title": "Plan Eat",
+        "generateList": "Generar Lista",
+        "createMeal": "Crear Nueva Comida"
+    },
+    "sidebar": {
+        "title": "Biblioteca de Comidas",
+        "searchPlaceholder": "Buscar comidas...",
+        "noMeals": "No se encontraron comidas. Intenta ajustar la búsqueda o filtros.",
+        "filters": {
+            "all": "Todas las Dietas",
+            "vegetarian": "Vegetariano",
+            "vegan": "Vegano",
+            "glutenFree": "Sin Gluten",
+            "keto": "Keto",
+            "paleo": "Paleo",
+            "pescatarian": "Pescatariano"
+        }
+    },
+    "scheduler": {
+        "lunch": "Almuerzo",
+        "dinner": "Cena",
+        "useLeftovers": "Usar Sobras",
+        "leftovers": "Sobras",
+        "weeklyView": "Plan Semanal",
+        "view": {
+            "list": "Lista",
+            "week": "Semana",
+            "month": "Mes"
+        }
+    },
+    "modals": {
+        "settings": {
+            "title": "Configuración",
+            "theme": "Tema",
+            "language": "Idioma",
+            "frequency": "Frecuencia de Compra",
+            "days": "días"
+        },
+        "createMeal": {
+            "title": "Crear Nueva Comida",
+            "editTitle": "Editar Comida",
+            "nameLabel": "Nombre de la Comida",
+            "namePlaceholder": "ej., Lasaña de Mamá",
+            "complexityLabel": "Complejidad",
+            "leftoverFriendly": "Apto para Sobras",
+            "tagsLabel": "Etiquetas Dietéticas",
+            "ingredientsLabel": "Ingredientes",
+            "addItem": "Agregar Ítem",
+            "cancel": "Cancelar",
+            "save": "Guardar Comida",
+            "simple": "Simple (Rápido)",
+            "complex": "Complejo (Detallado)",
+            "videoUrl": "URL de YouTube",
+            "sourceUrl": "Enlace de Receta",
+            "ingredientNamePlaceholder": "Nombre del ingrediente",
+            "qtyPlaceholder": "Cant",
+            "unitPlaceholder": "Unidad"
+        },
+        "shoppingList": {
+            "title": "Lista de Compras",
+            "reviewTitle": "Revisar Ítems",
+            "reviewDesc": "Desmarca los ítems que ya tienes. Los ítems en tu despensa están desmarcados por defecto.",
+            "empty": "Planifica tus comidas y haz clic en \"Generar Lista\" para ver los ítems aquí.",
+            "download": "Descargar PDF",
+            "share": "Compartir en WhatsApp",
+            "close": "Cerrar",
+            "estimatedTotal": "Total Estimado",
+            "disclaimer": "*Basado en precios promedio. Los precios reales pueden variar.",
+            "sortAisles": "Ordenar Pasillos",
+            "comparePrices": "Comparar Precios",
+            "regenerate": "Regenerar",
+            "backToList": "Volver a la Lista",
+            "createList": "Crear Lista"
+        }
+    },
+    "common": {
+        "close": "Cerrar",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "today": "Hoy",
+        "days": "Días"
+    },
+    "pantry": {
+        "title": "Mi Despensa",
+        "addPlaceholder": "Agregar ítem (ej., Sal, Arroz)",
+        "empty": "Tu despensa está vacía. ¡Agrega cosas que tengas en casa!",
+        "tooltip": "Mi Despensa"
+    }
+}

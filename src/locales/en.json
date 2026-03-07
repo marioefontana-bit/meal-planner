@@ -1,0 +1,94 @@
+{
+  "app": {
+    "title": "Plan Eat",
+    "generateList": "Generate List",
+    "createMeal": "Create New Meal"
+  },
+  "sidebar": {
+    "title": "Meals Library",
+    "searchPlaceholder": "Search meals...",
+    "noMeals": "No meals found. Try adjusting your search or filters.",
+    "filters": {
+      "all": "All Diets",
+      "vegetarian": "Vegetarian",
+      "vegan": "Vegan",
+      "glutenFree": "Gluten Free",
+      "keto": "Keto",
+      "paleo": "Paleo",
+      "pescatarian": "Pescatarian"
+    }
+  },
+  "scheduler": {
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "useLeftovers": "Use Leftovers",
+    "leftovers": "Leftovers",
+    "weeklyView": "Weekly Plan",
+    "view": {
+      "list": "List",
+      "week": "Week",
+      "month": "Month"
+    }
+  },
+  "modals": {
+    "settings": {
+      "title": "Settings",
+      "theme": "Theme",
+      "language": "Language",
+      "frequency": "Shopping Frequency",
+      "days": "days"
+    },
+    "createMeal": {
+      "title": "Create New Meal",
+      "editTitle": "Edit Meal",
+      "nameLabel": "Meal Name",
+      "namePlaceholder": "e.g., Mom's Lasagna",
+      "complexityLabel": "Complexity",
+      "leftoverFriendly": "Leftover Friendly",
+      "tagsLabel": "Dietary Tags",
+      "ingredientsLabel": "Ingredients",
+      "addItem": "Add Item",
+      "cancel": "Cancel",
+      "save": "Save Meal",
+      "simple": "Simple (Quick)",
+      "complex": "Complex (Detailed)",
+      "videoUrl": "YouTube URL",
+      "sourceUrl": "Recipe Source URL",
+      "ingredientNamePlaceholder": "Ingredient name",
+      "qtyPlaceholder": "Qty",
+      "unitPlaceholder": "Unit",
+      "stepsLabel": "Preparation Steps",
+      "addStep": "Add Step",
+      "stepPlaceholder": "e.g., Boil water with salt..."
+    },
+    "shoppingList": {
+      "title": "Shopping List",
+      "reviewTitle": "Review Items",
+      "reviewDesc": "Uncheck items you already have. Items in your pantry are unchecked by default.",
+      "empty": "Plan your meals and click \"Generate Shopping List\" to see items here.",
+      "download": "Download PDF",
+      "share": "Share WhatsApp",
+      "close": "Close",
+      "estimatedTotal": "Estimated Total",
+      "disclaimer": "*Based on average ingredient prices. Actual store prices may vary.",
+      "sortAisles": "Sort Aisles",
+      "comparePrices": "Compare Prices",
+      "regenerate": "Regenerate",
+      "backToList": "Back to List",
+      "createList": "Create List"
+    }
+  },
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "today": "Today",
+    "days": "Days"
+  },
+  "pantry": {
+    "title": "My Pantry",
+    "addPlaceholder": "Add item (e.g., Salt, Rice)",
+    "empty": "Your pantry is empty. Add items you have at home!",
+    "tooltip": "My Pantry"
+  }
+}
