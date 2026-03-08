@@ -28,7 +28,12 @@
             "list": "Lista",
             "week": "Semana",
             "month": "Mes"
-        }
+        },
+        "autoPlan": "Auto-Planificar",
+        "autoPlanSettings": "Opciones de Auto-Plan",
+        "dietaryFilter": "Filtro de Dieta",
+        "overwriteExisting": "Sobrescribir comidas existentes",
+        "generatePlan": "Generar Plan"
     },
     "modals": {
         "settings": {
@@ -36,7 +41,13 @@
             "theme": "Tema",
             "language": "Idioma",
             "frequency": "Frecuencia de Compra",
-            "days": "días"
+            "days": "días",
+            "dataManagement": "Gestión de Datos",
+            "exportData": "Exportar Datos",
+            "importData": "Importar Datos",
+            "exportSuccess": "Datos exportados correctamente",
+            "importSuccess": "Datos importados correctamente",
+            "importError": "Archivo de copia de seguridad no válido"
         },
         "createMeal": {
             "title": "Crear Nueva Comida",
@@ -44,6 +55,7 @@
             "nameLabel": "Nombre de la Comida",
             "namePlaceholder": "ej., Lasaña de Mamá",
             "complexityLabel": "Complejidad",
+            "servingsLabel": "Porciones",
             "leftoverFriendly": "Apto para Sobras",
             "tagsLabel": "Etiquetas Dietéticas",
             "ingredientsLabel": "Ingredientes",
@@ -84,8 +96,10 @@
     },
     "pantry": {
         "title": "Mi Despensa",
-        "addPlaceholder": "Agregar ítem (ej., Sal, Arroz)",
+        "addPlaceholder": "Agregar ítem (ej., Sal)",
         "empty": "Tu despensa está vacía. ¡Agrega cosas que tengas en casa!",
-        "tooltip": "Mi Despensa"
+        "tooltip": "Mi Despensa",
+        "qty": "Cant",
+        "unit": "Unidad"
     }
 }

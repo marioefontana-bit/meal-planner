@@ -8,6 +8,8 @@ export interface PantryItem {
     quantity: number;
     unit: string;
     expiryDate?: string;
+    priceEstimate?: number;
+    productUrl?: string;
 }
 
 interface PantryStore {

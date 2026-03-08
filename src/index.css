@@ -104,23 +104,38 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    background-image:
-      radial-gradient(at 0% 0%, hsla(222, 47%, 11%, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, hsla(210, 40%, 96%, 0.05) 0px, transparent 50%);
+    background: fixed linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+  }
+
+  /* Animated background accent */
+  body::before {
+    content: "";
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply backdrop-blur-md bg-white/40 dark:bg-black/40 border border-white/20 dark:border-white/10;
+    @apply backdrop-blur-md bg-white/10 dark:bg-black/20 border border-white/10;
   }
 
   .glass-card {
-    @apply backdrop-blur-xl bg-card/60 border border-border shadow-xl;
+    @apply backdrop-blur-2xl bg-card/40 border border-white/5 shadow-2xl;
+  }
+
+  .glass-premium {
+    @apply backdrop-blur-3xl bg-white/5 dark:bg-black/40 border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ring-1 ring-white/10;
   }
 
   .text-glow {
-    text-shadow: 0 0 10px hsla(var(--primary), 0.5);
+    text-shadow: 0 0 15px hsla(var(--primary), 0.6);
   }
 
   .scroll-hide::-webkit-scrollbar {

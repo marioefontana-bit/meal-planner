@@ -28,7 +28,12 @@
       "list": "List",
       "week": "Week",
       "month": "Month"
-    }
+    },
+    "autoPlan": "Auto-Plan",
+    "autoPlanSettings": "Auto-Plan Settings",
+    "dietaryFilter": "Dietary Filter",
+    "overwriteExisting": "Overwrite existing meals",
+    "generatePlan": "Generate Plan"
   },
   "modals": {
     "settings": {
@@ -36,7 +41,13 @@
       "theme": "Theme",
       "language": "Language",
       "frequency": "Shopping Frequency",
-      "days": "days"
+      "days": "days",
+      "dataManagement": "Data Management",
+      "exportData": "Export Data",
+      "importData": "Import Data",
+      "exportSuccess": "Data exported successfully",
+      "importSuccess": "Data imported successfully",
+      "importError": "Invalid backup file"
     },
     "createMeal": {
       "title": "Create New Meal",
@@ -44,6 +55,7 @@
       "nameLabel": "Meal Name",
       "namePlaceholder": "e.g., Mom's Lasagna",
       "complexityLabel": "Complexity",
+      "servingsLabel": "Servings",
       "leftoverFriendly": "Leftover Friendly",
       "tagsLabel": "Dietary Tags",
       "ingredientsLabel": "Ingredients",
@@ -87,8 +99,10 @@
   },
   "pantry": {
     "title": "My Pantry",
-    "addPlaceholder": "Add item (e.g., Salt, Rice)",
+    "addPlaceholder": "Add item (e.g., Salt)",
     "empty": "Your pantry is empty. Add items you have at home!",
-    "tooltip": "My Pantry"
+    "tooltip": "My Pantry",
+    "qty": "Qty",
+    "unit": "Unit"
   }
 }

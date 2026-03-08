@@ -447,7 +447,19 @@ export const ShoppingListModal: React.FC<ShoppingListModalProps> = ({ isOpen, on
                                             Add
                                         </button>
                                     </form>
-                                </div>
+                                    </div>
+
+                                {/* Total Budget Estimate */}
+                                {currentShoppingList && (
+                                    <div className="mt-6 pt-4 border-t border-border flex justify-end">
+                                        <div className="bg-primary/10 text-primary px-6 py-3 rounded-xl border border-primary/20 flex flex-col items-end">
+                                            <span className="text-xs font-bold uppercase tracking-widest opacity-80 mb-1">Total Estimated Budget</span>
+                                            <span className="text-2xl font-black">
+                                                $ {currentShoppingList.items.reduce((acc, item) => acc + (item.estimatedCost || 0), 0).toFixed(2)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )
                     )}

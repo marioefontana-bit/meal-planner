@@ -21,10 +21,25 @@ export const MealCard: React.FC<MealCardProps> = ({ meal, onEditClick }) => {
             draggable
             onDragStart={onDragStart}
             className={clsx(
-                "group bg-secondary/50 p-3 rounded-md shadow-sm border border-border flex items-center gap-2 cursor-grab active:cursor-grabbing hover:bg-secondary/80 transition-colors relative",
+                "group bg-secondary/50 p-3 rounded-md shadow-sm border border-border flex items-center gap-2 cursor-grab active:cursor-grabbing hover:bg-secondary/80 transition-colors relative"
             )}
         >
             <GripVertical className="w-5 h-5 text-muted-foreground shrink-0" />
+            
+            {meal.image && (
+                <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-border/50">
+                    <img 
+                        src={meal.image} 
+                        alt={meal.name} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                            // Hide broken images gracefully
+                            (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                    />
+                </div>
+            )}
+
             <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-start">
                     <h4 className="font-medium text-sm truncate pr-2">{meal.name}</h4>

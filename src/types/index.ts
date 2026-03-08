@@ -16,6 +16,7 @@ export interface Ingredient {
     unit: string;
     category?: string;
     priceEstimate?: number; // Phase 3: Cost estimator
+    productUrl?: string; // Phase 3: Carrefour/Supermarket Link
 }
 
 export interface Meal {
@@ -31,6 +32,7 @@ export interface Meal {
     videoUrl?: string; // Phase 5: YouTube integration
     sourceUrl?: string; // Phase 5: Blog/Recipe Link
     steps?: string[]; // Phase 2: Recipe preparation steps
+    servings?: number;
 }
 
 export interface MealSlotData {

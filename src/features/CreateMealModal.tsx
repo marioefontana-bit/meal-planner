@@ -4,6 +4,7 @@ import { X, Plus, Trash2, Globe, Loader2 } from 'lucide-react';
 import type { Meal, Ingredient, MealType, MealComplexity, DietaryTag } from '../types';
 import { useTranslation } from 'react-i18next';
 import { RecipeImportService } from '../services/RecipeImportService';
+import { PriceScraperService } from '../services/PriceScraperService';
 
 interface CreateMealModalProps {
     isOpen: boolean;
@@ -21,12 +22,15 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({ isOpen, onClos
     const [tags, setTags] = useState<DietaryTag[]>([]);
     const [ingredients, setIngredients] = useState<Partial<Ingredient>[]>([{ id: crypto.randomUUID(), name: '', quantity: 1, unit: 'pcs' }]);
     const [isLeftoverFriendly, setIsLeftoverFriendly] = useState(false);
+    const [servings, setServings] = useState(1);
     const [steps, setSteps] = useState<string[]>([]);
     const [videoUrl, setVideoUrl] = useState('');
     const [sourceUrl, setSourceUrl] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
     const [importUrl, setImportUrl] = useState('');
     const [isImporting, setIsImporting] = useState(false);
     const [importError, setImportError] = useState('');
+    const [scrapingIndex, setScrapingIndex] = useState<number | null>(null);
 
     // Load initial data when modal opens or initialData changes
     React.useEffect(() => {
@@ -36,6 +40,7 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({ isOpen, onClos
             setTags(initialData.tags || []);
             setIngredients(initialData.ingredients.map(i => ({ ...i })));
             setIsLeftoverFriendly(initialData.isLeftoverFriendly || false);
+            setServings(initialData.servings || 1);
             setSteps(initialData.steps || []);
             setVideoUrl(initialData.videoUrl || '');
             setSourceUrl(initialData.sourceUrl || '');
@@ -46,9 +51,11 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({ isOpen, onClos
             setTags([]);
             setIngredients([{ id: crypto.randomUUID(), name: '', quantity: 1, unit: 'pcs' }]);
             setIsLeftoverFriendly(false);
+            setServings(1);
             setSteps([]);
             setVideoUrl('');
             setSourceUrl('');
+            setImageUrl('');
         }
     }, [isOpen, initialData]);
 
@@ -66,6 +73,31 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({ isOpen, onClos
         const newIngredients = [...ingredients];
         newIngredients[index] = { ...newIngredients[index], [field]: value };
         setIngredients(newIngredients);
+    };
+
+    const handleScrapePrice = async (index: number) => {
+        const url = prompt("Paste Carrefour URL:");
+        if (!url) return;
+        
+        setScrapingIndex(index);
+        try {
+            const price = await PriceScraperService.scrapePrice(url);
+            if (price) {
+                const newIngredients = [...ingredients];
+                newIngredients[index] = { 
+                    ...newIngredients[index], 
+                    priceEstimate: price,
+                    productUrl: url
+                };
+                setIngredients(newIngredients);
+            } else {
+                alert("Could not find a price. Please check the URL or enter manually.");
+            }
+        } catch (e) {
+            alert("Error fetching price. Please enter manually.");
+        } finally {
+            setScrapingIndex(null);
+        }
     };
 
     const handleAddStep = () => setSteps([...steps, '']);
@@ -113,17 +145,20 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({ isOpen, onClos
             complexity,
             type: types,
             isLeftoverFriendly,
+            servings: servings || 1,
             tags,
             steps: steps.filter(s => s.trim()),
             videoUrl: videoUrl.trim() || undefined,
             sourceUrl: sourceUrl.trim() || undefined,
+            image: imageUrl.trim() || undefined,
             ingredients: ingredients.filter(i => i.name?.trim()).map(i => ({
                 id: i.id || crypto.randomUUID(),
                 name: i.name || 'Unknown Ingredient',
                 quantity: Number(i.quantity) || 0,
                 unit: i.unit || 'pcs',
                 category: i.category || 'Custom',
-                priceEstimate: i.priceEstimate || 1.0
+                priceEstimate: i.priceEstimate ? Number(i.priceEstimate) : undefined,
+                productUrl: i.productUrl || undefined
             }))
         };
 
@@ -191,16 +226,29 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({ isOpen, onClos
                                     placeholder={t('modals.createMeal.namePlaceholder')}
                                 />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">{t('modals.createMeal.complexityLabel')}</label>
-                                <select
-                                    className="w-full bg-secondary px-3 py-2 rounded-md border border-border focus:ring-2 focus:ring-primary outline-none"
-                                    value={complexity}
-                                    onChange={e => setComplexity(e.target.value as MealComplexity)}
-                                >
-                                    <option value="simple">{t('modals.createMeal.simple')}</option>
-                                    <option value="complex">{t('modals.createMeal.complex')}</option>
-                                </select>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">{t('modals.createMeal.complexityLabel')}</label>
+                                    <select
+                                        className="w-full bg-secondary px-3 py-2 rounded-md border border-border focus:ring-2 focus:ring-primary outline-none"
+                                        value={complexity}
+                                        onChange={e => setComplexity(e.target.value as MealComplexity)}
+                                    >
+                                        <option value="simple">{t('modals.createMeal.simple')}</option>
+                                        <option value="complex">{t('modals.createMeal.complex')}</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">{t('modals.createMeal.servingsLabel', 'Servings')}</label>
+                                    <input
+                                        required
+                                        type="number"
+                                        min="1"
+                                        className="w-full bg-secondary px-3 py-2 rounded-md border border-border focus:ring-2 focus:ring-primary outline-none"
+                                        value={servings || ''}
+                                        onChange={e => setServings(parseInt(e.target.value))}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -226,6 +274,18 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({ isOpen, onClos
                                     placeholder="https://recipe-blog.com/..."
                                 />
                             </div>
+                        </div>
+
+                        {/* Image */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">{t('modals.createMeal.imageUrl', 'Image URL')}</label>
+                            <input
+                                type="url"
+                                className="w-full bg-secondary px-3 py-2 rounded-md border border-border focus:ring-2 focus:ring-primary outline-none text-sm"
+                                value={imageUrl}
+                                onChange={e => setImageUrl(e.target.value)}
+                                placeholder="https://example.com/image.jpg"
+                            />
                         </div>
 
                         {/* Options */}
@@ -269,38 +329,68 @@ export const CreateMealModal: React.FC<CreateMealModalProps> = ({ isOpen, onClos
                                     <Plus className="w-3 h-3" /> {t('modals.createMeal.addItem')}
                                 </button>
                             </div>
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 {ingredients.map((ing, idx) => (
-                                    <div key={ing.id} className="flex gap-2 items-center">
-                                        <input
-                                            type="text"
-                                            className="flex-1 bg-secondary px-3 py-2 rounded-md border border-border text-sm"
-                                            placeholder={t('modals.createMeal.ingredientNamePlaceholder')}
-                                            value={ing.name}
-                                            onChange={e => handleIngredientChange(idx, 'name', e.target.value)}
-                                        />
-                                        <input
-                                            type="number"
-                                            className="w-20 bg-secondary px-3 py-2 rounded-md border border-border text-sm"
-                                            placeholder={t('modals.createMeal.qtyPlaceholder')}
-                                            value={ing.quantity}
-                                            min="0"
-                                            onChange={e => handleIngredientChange(idx, 'quantity', e.target.value)}
-                                        />
-                                        <input
-                                            type="text"
-                                            className="w-24 bg-secondary px-3 py-2 rounded-md border border-border text-sm"
-                                            placeholder={t('modals.createMeal.unitPlaceholder')}
-                                            value={ing.unit}
-                                            onChange={e => handleIngredientChange(idx, 'unit', e.target.value)}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveIngredient(idx)}
-                                            className="p-2 text-muted-foreground hover:text-destructive"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+                                    <div key={ing.id} className="flex flex-col gap-2 p-3 bg-card rounded-lg border border-border/50">
+                                        <div className="flex gap-2 items-center">
+                                            <input
+                                                type="text"
+                                                className="flex-1 bg-secondary px-3 py-2 rounded-md border border-border text-sm"
+                                                placeholder={t('modals.createMeal.ingredientNamePlaceholder')}
+                                                value={ing.name}
+                                                onChange={e => handleIngredientChange(idx, 'name', e.target.value)}
+                                            />
+                                            <input
+                                                type="number"
+                                                className="w-16 sm:w-20 bg-secondary px-3 py-2 rounded-md border border-border text-sm"
+                                                placeholder={t('modals.createMeal.qtyPlaceholder')}
+                                                value={ing.quantity}
+                                                min="0"
+                                                onChange={e => handleIngredientChange(idx, 'quantity', e.target.value)}
+                                            />
+                                            <input
+                                                type="text"
+                                                className="w-20 sm:w-24 bg-secondary px-3 py-2 rounded-md border border-border text-sm"
+                                                placeholder={t('modals.createMeal.unitPlaceholder')}
+                                                value={ing.unit}
+                                                onChange={e => handleIngredientChange(idx, 'unit', e.target.value)}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveIngredient(idx)}
+                                                className="p-2 text-muted-foreground hover:text-destructive hidden sm:block"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                        <div className="flex gap-2 items-center">
+                                            <div className="relative flex-1">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                                                <input
+                                                    type="number"
+                                                    className="w-full bg-secondary pl-7 pr-3 py-1.5 rounded-md border border-border text-sm"
+                                                    placeholder="Price/Unit (e.g. 1500)"
+                                                    value={ing.priceEstimate || ''}
+                                                    onChange={e => handleIngredientChange(idx, 'priceEstimate', e.target.value)}
+                                                />
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleScrapePrice(idx)}
+                                                disabled={scrapingIndex === idx}
+                                                title="Fetch price from Carrefour URL"
+                                                className="p-1.5 bg-primary/10 text-primary hover:bg-primary/20 rounded-md transition-colors flex items-center justify-center shrink-0 disabled:opacity-50"
+                                            >
+                                                {scrapingIndex === idx ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveIngredient(idx)}
+                                                className="p-2 text-muted-foreground hover:text-destructive sm:hidden"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

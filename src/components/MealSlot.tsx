@@ -85,11 +85,18 @@ export const MealSlot: React.FC<MealSlotProps> = ({ dayDate, type, data }) => {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             className={clsx(
-                "flex-1 rounded-xl border-2 border-dashed transition-all duration-300 p-2.5 flex flex-col justify-center min-h-[85px] relative group overflow-hidden",
-                isHovered
-                    ? "border-primary bg-primary/10 scale-95 shadow-inner"
-                    : "border-transparent bg-secondary/20",
-                (data.type === 'meal' || data.type === 'leftovers') && "border-solid bg-card/60 backdrop-blur-md border-border/50 shadow-sm"
+                "flex-1 rounded-xl border-2 transition-all duration-300 p-4 flex flex-col justify-center min-h-[110px] relative group overflow-hidden",
+                isHovered ? "scale-[0.99] shadow-md" : "shadow-sm",
+                // Lunch Theme (Green)
+                type === 'lunch' 
+                    ? (isHovered ? "border-green-500/60 bg-green-500/10" : "border-green-500/20 bg-green-500/5") 
+                    : (isHovered ? "border-blue-500/60 bg-blue-500/10" : "border-blue-500/20 bg-blue-500/5"),
+                // Active State (Meal or Leftovers)
+                (data.type === 'meal' || data.type === 'leftovers') && (
+                    type === 'lunch' 
+                        ? "border-green-500/40 bg-green-500/10 backdrop-blur-sm" 
+                        : "border-blue-500/40 bg-blue-500/10 backdrop-blur-sm"
+                )
             )}
         >
             {/* Background highlight for active slots */}
@@ -100,14 +107,26 @@ export const MealSlot: React.FC<MealSlotProps> = ({ dayDate, type, data }) => {
             {data.type === 'meal' && meal ? (
                 <div className="relative z-10 w-full">
                     <div className="flex justify-between items-start gap-2">
+                        {meal.image && (
+                            <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0 border border-border/50">
+                                <img
+                                    src={meal.image}
+                                    alt={meal.name}
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                />
+                            </div>
+                        )}
                         <div className="min-w-0 flex-1">
-                            <span className="font-bold text-[13px] leading-tight block truncate group-hover:whitespace-normal group-hover:overflow-visible transition-all">
+                            <span className="font-bold text-[13px] leading-tight block line-clamp-2 transition-all text-foreground/90">
                                 {meal.name}
                             </span>
-                            <div className="flex items-center gap-1.5 mt-1">
+                            <div className="flex items-center gap-2 mt-2">
                                 <span className={clsx(
-                                    "text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-sm",
-                                    meal.complexity === 'simple' ? "bg-green-500/10 text-green-600" : "bg-orange-500/10 text-orange-600"
+                                    "text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded",
+                                    meal.complexity === 'simple' ? "bg-green-500/10 text-green-600 dark:text-green-400" : "bg-orange-500/10 text-orange-600 dark:text-orange-400"
                                 )}>
                                     {meal.complexity}
                                 </span>
@@ -130,7 +149,7 @@ export const MealSlot: React.FC<MealSlotProps> = ({ dayDate, type, data }) => {
                                 <Minus className="w-2.5 h-2.5" />
                             </button>
                             <span className="text-[10px] font-black px-2 min-w-[2.5rem] text-center border-x border-border/30">
-                                {data.portions || 1}<span className="text-[8px] opacity-60 ml-0.5">P</span>
+                                {data.portions || 1}<span className="text-[9px] opacity-60 ml-0.5 font-bold">P</span>
                             </span>
                             <button
                                 onClick={(e) => { e.stopPropagation(); updatePortions(1); }}

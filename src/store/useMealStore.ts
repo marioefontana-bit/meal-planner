@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { Meal, DayPlan, AppSettings, ShoppingList, Ingredient } from '../types';
+import type { Meal, DayPlan, AppSettings, ShoppingList, Ingredient, ShoppingItem } from '../types';
+import { usePantryStore } from './usePantryStore';
 import { mockMeals } from '../data/mockMeals';
 import { addDays, format, isSaturday, isSunday } from 'date-fns';
 
@@ -20,6 +21,7 @@ interface MealStore {
     updateShoppingItem: (itemId: string, updates: Partial<any>) => void;
     addShoppingItem: (item: any) => void;
     clearCheckedItems: () => void;
+    autoPopulateWeek: (startDate: string, days: number, filter: string, preserveExisting: boolean) => void;
 
     // Selectors helpers
     getDayPlan: (date: string) => DayPlan;
@@ -79,6 +81,46 @@ export const useMealStore = create<MealStore>()(
                         }
                     }
                 };
+            }),
+
+            autoPopulateWeek: (startDateStr, days, filter, preserveExisting) => set((state) => {
+                const startDate = new Date(startDateStr);
+                const newPlanningData = { ...state.planningData };
+                
+                // Filter available meals
+                const availableMeals = state.meals.filter(meal => 
+                    filter === 'all' || (meal.tags && meal.tags.includes(filter as any))
+                );
+
+                if (availableMeals.length === 0) return {}; // Nothing to populate with
+
+                for (let i = 0; i < days; i++) {
+                    const currentDate = addDays(startDate, i);
+                    const dateStr = format(currentDate, 'yyyy-MM-dd');
+                    const existingDay = newPlanningData[dateStr] || {
+                        date: dateStr,
+                        lunch: { type: null, portions: isSaturday(currentDate) || isSunday(currentDate) ? 4 : 2 },
+                        dinner: { type: null, portions: 4 }
+                    };
+
+                    const newDay = { ...existingDay };
+
+                    // Populate Lunch
+                    if (!preserveExisting || !newDay.lunch.type) {
+                        const randomMeal = availableMeals[Math.floor(Math.random() * availableMeals.length)];
+                        newDay.lunch = { ...newDay.lunch, type: 'meal', mealId: randomMeal.id };
+                    }
+
+                    // Populate Dinner
+                    if (!preserveExisting || !newDay.dinner.type) {
+                        const randomMeal = availableMeals[Math.floor(Math.random() * availableMeals.length)];
+                        newDay.dinner = { ...newDay.dinner, type: 'meal', mealId: randomMeal.id };
+                    }
+
+                    newPlanningData[dateStr] = newDay;
+                }
+
+                return { planningData: newPlanningData };
             }),
 
             updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
@@ -148,7 +190,8 @@ export const useMealStore = create<MealStore>()(
                                 if (meal) {
                                     // Scale ingredients by portions
                                     const portions = slot.portions || 1;
-                                    const multiplier = portions;
+                                    const servings = meal.servings || 1;
+                                    const multiplier = portions / servings;
 
                                     meal.ingredients.forEach(ing => {
                                         allIngredients.push({
@@ -176,15 +219,35 @@ export const useMealStore = create<MealStore>()(
                 });
 
                 // Create Item List
-                const items = Object.values(consolidated).map((ing, idx) => ({
-                    id: `item-${idx}`,
-                    name: ing.name,
-                    quantity: parseFloat(ing.quantity.toFixed(2)),
-                    unit: ing.unit,
-                    checked: false,
-                    category: ing.category,
-                    estimatedCost: (ing.priceEstimate || 0) * ing.quantity
-                }));
+                const pantryItems = usePantryStore.getState().items;
+                const items: ShoppingItem[] = [];
+                
+                Object.values(consolidated).forEach((ing) => {
+                    let neededQuantity = ing.quantity;
+
+                    // Find matching item in pantry (fuzzy match by name and unit)
+                    const pantryMatch = pantryItems.find((p: any) => 
+                        p.name.toLowerCase().trim() === ing.name.toLowerCase().trim() && 
+                        p.unit.toLowerCase().trim() === ing.unit.toLowerCase().trim()
+                    );
+
+                    if (pantryMatch) {
+                        neededQuantity -= pantryMatch.quantity;
+                    }
+
+                    // Only add to shopping list if we still need some
+                    if (neededQuantity > 0) {
+                        items.push({
+                            id: `item-${crypto.randomUUID()}`,
+                            name: ing.name,
+                            quantity: parseFloat(neededQuantity.toFixed(2)),
+                            unit: ing.unit,
+                            checked: false,
+                            category: ing.category,
+                            estimatedCost: (ing.priceEstimate || 0) * neededQuantity
+                        });
+                    }
+                });
 
                 const newList: ShoppingList = {
                     id: crypto.randomUUID(),
