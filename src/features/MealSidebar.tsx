@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useMealStore } from '../store/useMealStore';
 import { MealCard } from '../components/MealCard';
-import { Search, Filter, PlusCircle } from 'lucide-react';
+import { Search, Filter, PlusCircle, X } from 'lucide-react';
 import type { DietaryTag } from '../types';
 import { useTranslation } from 'react-i18next';
 
 interface MealSidebarProps {
     onCreateClick: () => void;
     onEditClick: (meal: any) => void;
+    onClose: () => void;
 }
 
-export const MealSidebar: React.FC<MealSidebarProps> = ({ onCreateClick, onEditClick }) => {
+export const MealSidebar: React.FC<MealSidebarProps> = ({ onCreateClick, onEditClick, onClose }) => {
     const { meals } = useMealStore();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedTag, setSelectedTag] = useState<DietaryTag | 'all'>('all');
@@ -36,8 +37,16 @@ export const MealSidebar: React.FC<MealSidebarProps> = ({ onCreateClick, onEditC
             <div className="p-5 border-b border-border/50 space-y-4">
                 <div className="flex items-center justify-between">
                     <h2 className="font-black text-xl tracking-tight text-foreground/80">{t('sidebar.title')}</h2>
-                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                        <Filter className="w-4 h-4 text-primary" />
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <Filter className="w-4 h-4 text-primary" />
+                        </div>
+                        <button 
+                            onClick={onClose}
+                            className="w-8 h-8 rounded-xl bg-secondary hover:bg-secondary/80 flex items-center justify-center lg:hidden"
+                        >
+                            <X className="w-4 h-4 text-muted-foreground" />
+                        </button>
                     </div>
                 </div>
 

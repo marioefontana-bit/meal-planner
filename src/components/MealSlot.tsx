@@ -10,9 +10,10 @@ interface MealSlotProps {
     dayDate: string;
     type: 'lunch' | 'dinner';
     data: MealSlotData;
+    onEdit?: (meal: any) => void;
 }
 
-export const MealSlot: React.FC<MealSlotProps> = ({ dayDate, type, data }) => {
+export const MealSlot: React.FC<MealSlotProps> = ({ dayDate, type, data, onEdit }) => {
     const { updateDayPlan, meals, planningData } = useMealStore();
     const [isHovered, setIsHovered] = useState(false);
     const [showLeftoverPicker, setShowLeftoverPicker] = useState(false);
@@ -84,8 +85,10 @@ export const MealSlot: React.FC<MealSlotProps> = ({ dayDate, type, data }) => {
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
+            onClick={() => meal && onEdit && onEdit(meal)}
             className={clsx(
                 "flex-1 rounded-xl border-2 transition-all duration-300 p-4 flex flex-col justify-center min-h-[110px] relative group overflow-hidden",
+                meal && onEdit ? "cursor-pointer active:scale-[0.98]" : "cursor-default",
                 isHovered ? "scale-[0.99] shadow-md" : "shadow-sm",
                 // Lunch Theme (Green)
                 type === 'lunch' 

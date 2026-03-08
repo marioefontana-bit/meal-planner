@@ -22,7 +22,11 @@ import { useTranslation } from 'react-i18next';
 
 type ViewType = 'list' | 'week' | 'month';
 
-export const Scheduler: React.FC = () => {
+interface SchedulerProps {
+    onEditMeal?: (meal: any) => void;
+}
+
+export const Scheduler: React.FC<SchedulerProps> = ({ onEditMeal }) => {
     const { getDayPlan, autoPopulateWeek, meals } = useMealStore();
     const { t, i18n } = useTranslation();
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -156,12 +160,12 @@ export const Scheduler: React.FC = () => {
                             <div className="flex flex-col lg:flex-row gap-6 relative z-10">
                                 <div className="flex-1 space-y-4">
                                     <span className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('scheduler.lunch')}</span>
-                                    <MealSlot dayDate={dateKey} type="lunch" data={dayPlan.lunch} />
+                                    <MealSlot dayDate={dateKey} type="lunch" data={dayPlan.lunch} onEdit={onEditMeal} />
                                 </div>
                                 <div className="hidden lg:block w-px bg-border/50 self-stretch my-4" />
                                 <div className="flex-1 space-y-4">
                                     <span className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('scheduler.dinner')}</span>
-                                    <MealSlot dayDate={dateKey} type="dinner" data={dayPlan.dinner} />
+                                    <MealSlot dayDate={dateKey} type="dinner" data={dayPlan.dinner} onEdit={onEditMeal} />
                                 </div>
                             </div>
                         </div>
@@ -217,11 +221,11 @@ export const Scheduler: React.FC = () => {
                                 {/* Slots with explicit L/D labels for better clarity */}
                                 <div className="flex-1 p-3 flex flex-col gap-8 overflow-y-auto scroll-hide">
                                     <div className="space-y-2">
-                                        <MealSlot dayDate={dateKey} type="lunch" data={dayPlan.lunch} />
+                                        <MealSlot dayDate={dateKey} type="lunch" data={dayPlan.lunch} onEdit={onEditMeal} />
                                     </div>
                                     
                                     <div className="space-y-2">
-                                        <MealSlot dayDate={dateKey} type="dinner" data={dayPlan.dinner} />
+                                        <MealSlot dayDate={dateKey} type="dinner" data={dayPlan.dinner} onEdit={onEditMeal} />
                                     </div>
                                 </div>
                             </div>
@@ -307,11 +311,11 @@ export const Scheduler: React.FC = () => {
     return (
         <div className="flex-1 flex flex-col h-full overflow-hidden bg-background/30 backdrop-blur-3xl relative">
             {/* Contextual Header */}
-            <div className="flex items-center justify-between p-6 bg-card/60 backdrop-blur-xl border-b border-border shadow-sm z-30 sticky top-0">
-                <div className="flex items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 bg-card/60 backdrop-blur-xl border-b border-border shadow-sm z-30 sticky top-0 gap-4">
+                <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto justify-between sm:justify-start">
                     <div className="flex flex-col">
-                        <h2 className="text-2xl font-black capitalize text-foreground tracking-tighter drop-shadow-sm flex items-center gap-2">
-                            <CalendarIcon className="w-6 h-6 text-primary" />
+                        <h2 className="text-xl sm:text-2xl font-black capitalize text-foreground tracking-tighter drop-shadow-sm flex items-center gap-2">
+                            <CalendarIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                             {format(anchorDate, 'MMMM yyyy', { locale })}
                         </h2>
                     </div>
@@ -329,7 +333,7 @@ export const Scheduler: React.FC = () => {
                     )}
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end">
                     {/* View Switcher */}
                     <div className="flex p-1 bg-secondary/40 backdrop-blur-md rounded-xl border border-border/50">
                         <button
